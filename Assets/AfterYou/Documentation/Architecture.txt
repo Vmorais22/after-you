@@ -32,3 +32,9 @@ replace the placeholder geometry without changing portal logic.
 The editor content generator creates reusable GameSystems, Player, NPC, and Portal prefabs, all
 baseline ScriptableObject assets, and the MainStreet scene. It is versioned and idempotent so the
 same content can be rebuilt safely from Tools > After You > Rebuild Foundation Content.
+
+7. Street parallax
+The reference image is split into skyline, distant-building, and street-furniture sprites. Each
+layer follows the active camera at a configurable ratio through ParallaxLayer2D. The runtime logic
+depends only on SpriteRenderer and Transform, so every layer can be replaced independently without
+changing camera, gameplay, portal, or scene code.

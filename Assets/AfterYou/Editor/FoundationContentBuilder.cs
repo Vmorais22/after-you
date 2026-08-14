@@ -28,12 +28,17 @@ namespace AfterYou.Editor
 {
     internal static class FoundationContentBuilder
     {
+        private const int FoundationVersion = 3;
         private const string Root = "Assets/AfterYou";
+        private const string VersionAssetPath = Root + "/Editor/FoundationVersion.asset";
         private const string ScenePath = Root + "/Scenes/MainStreet.unity";
         private const string SystemsPrefabPath = Root + "/Prefabs/Systems/GameSystems.prefab";
         private const string PlayerPrefabPath = Root + "/Prefabs/Characters/Player.prefab";
         private const string NpcPrefabPath = Root + "/Prefabs/Characters/NPC.prefab";
         private const string PortalPrefabPath = Root + "/Prefabs/World/Portal.prefab";
+        private const string SkylinePath = Root + "/Art/Parallax/Skyline.png";
+        private const string BuildingsPath = Root + "/Art/Parallax/Buildings.png";
+        private const string StreetFurniturePath = Root + "/Art/Parallax/StreetFurniture.png";
 
         [InitializeOnLoadMethod]
         private static void ScheduleInitialBuild()
@@ -63,7 +68,9 @@ namespace AfterYou.Editor
                 AssetDatabase.LoadAssetAtPath<GameObject>(PlayerPrefabPath) != null &&
                 AssetDatabase.LoadAssetAtPath<GameObject>(NpcPrefabPath) != null &&
                 AssetDatabase.LoadAssetAtPath<GameObject>(PortalPrefabPath) != null &&
-                AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null;
+                AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath) != null &&
+                AssetDatabase.LoadAssetAtPath<FoundationVersionAsset>(VersionAssetPath) is
+                { Version: FoundationVersion };
 
             if (!complete)
             {
@@ -95,15 +102,86 @@ namespace AfterYou.Editor
         private static void Build(bool overwrite)
         {
             EnsureFolders();
+            var repairedAssets = RemoveInvalidGeneratedAssets();
 
             var assets = CreateDataAssets(overwrite);
             var sprites = CreatePlaceholderSprites(overwrite);
-            CreatePrefabs(assets, sprites, overwrite);
-            CreateMainStreet(assets, sprites);
+            var parallaxSprites = PrepareParallaxSprites();
+            CreatePrefabs(assets, sprites, overwrite || repairedAssets);
+            CreateMainStreet(assets, sprites, parallaxSprites);
+            WriteFoundationVersion();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("After You foundation content is ready.");
+        }
+
+        private static bool RemoveInvalidGeneratedAssets()
+        {
+            var removedAny = false;
+            removedAny |= RemoveIfInvalid<TimeConfigSO>(
+                Root + "/Data/Configuration/TimeConfiguration.asset");
+            removedAny |= RemoveIfInvalid<TimeChangedChannelSO>(
+                Root + "/Data/Events/TimeChanged.asset");
+            removedAny |= RemoveIfInvalid<DayEndedChannelSO>(
+                Root + "/Data/Events/DayEnded.asset");
+            removedAny |= RemoveIfInvalid<NarrativeEventChannelSO>(
+                Root + "/Data/Events/NarrativeEventCompleted.asset");
+            removedAny |= RemoveIfInvalid<StringEventChannelSO>(
+                Root + "/Data/Events/DialogueStarted.asset");
+            removedAny |= RemoveIfInvalid<StringEventChannelSO>(
+                Root + "/Data/Events/DialogueEnded.asset");
+            removedAny |= RemoveIfInvalid<DialogueDefinitionSO>(
+                Root + "/Data/Dialogue/FoundationExample.asset");
+            removedAny |= RemoveIfInvalid<NarrativeEventSO>(
+                Root + "/Data/Narrative/FoundationExample.asset");
+
+            for (var index = 1; index <= 9; index++)
+            {
+                removedAny |= RemoveIfInvalid<PortalDefinitionSO>(
+                    $"{Root}/Data/Portals/Building{index:00}.asset");
+            }
+
+            foreach (var characterName in new[] { "Alex", "Mara", "Noah" })
+            {
+                removedAny |= RemoveIfInvalid<RoutineScheduleSO>(
+                    $"{Root}/Data/Characters/{characterName}Routine.asset");
+                removedAny |= RemoveIfInvalid<CharacterDefinitionSO>(
+                    $"{Root}/Data/Characters/{characterName}.asset");
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            return removedAny;
+        }
+
+        private static bool RemoveIfInvalid<T>(string path) where T : Object
+        {
+            if (AssetDatabase.LoadAssetAtPath<T>(path) != null)
+            {
+                return false;
+            }
+
+            if (AssetDatabase.LoadMainAssetAtPath(path) != null ||
+                System.IO.File.Exists(System.IO.Path.GetFullPath(path)))
+            {
+                return AssetDatabase.DeleteAsset(path);
+            }
+
+            return false;
+        }
+
+        private static void WriteFoundationVersion()
+        {
+            var version = AssetDatabase.LoadAssetAtPath<FoundationVersionAsset>(VersionAssetPath);
+            if (version == null)
+            {
+                version = ScriptableObject.CreateInstance<FoundationVersionAsset>();
+                AssetDatabase.CreateAsset(version, VersionAssetPath);
+            }
+
+            version.Version = FoundationVersion;
+            EditorUtility.SetDirty(version);
         }
 
         private static FoundationAssets CreateDataAssets(bool overwrite)
@@ -312,7 +390,10 @@ namespace AfterYou.Editor
             }
         }
 
-        private static void CreateMainStreet(FoundationAssets assets, PlaceholderSprites sprites)
+        private static void CreateMainStreet(
+            FoundationAssets assets,
+            PlaceholderSprites sprites,
+            ParallaxSprites parallaxSprites)
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             scene.name = "MainStreet";
@@ -330,7 +411,8 @@ namespace AfterYou.Editor
             var player = (GameObject)PrefabUtility.InstantiatePrefab(playerPrefab, scene);
             player.transform.position = new Vector3(-45f, 0f, 0f);
 
-            CreateCamera(sceneRoot.transform, player.transform);
+            var cameraTransform = CreateCamera(sceneRoot.transform, player.transform);
+            CreateParallaxBackground(sceneRoot.transform, cameraTransform, parallaxSprites);
             CreateBuildingsAndPortals(sceneRoot.transform, assets, sprites);
             CreateNpcs(scene, assets.Characters);
 
@@ -361,15 +443,6 @@ namespace AfterYou.Editor
 
         private static void CreateStreetGeometry(Transform parent, Sprite sprite)
         {
-            var background = CreateVisual(
-                "Sky Placeholder",
-                sprite,
-                "Background",
-                new Vector2(100f, 30f),
-                new Color(0.16f, 0.2f, 0.32f));
-            background.transform.SetParent(parent);
-            background.transform.position = new Vector3(0f, 8f, 5f);
-
             var street = CreateVisual(
                 "Street",
                 sprite,
@@ -495,7 +568,7 @@ namespace AfterYou.Editor
             }
         }
 
-        private static void CreateCamera(Transform parent, Transform target)
+        private static Transform CreateCamera(Transform parent, Transform target)
         {
             var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener));
             cameraObject.transform.SetParent(parent);
@@ -538,6 +611,103 @@ namespace AfterYou.Editor
                 var follow = cameraObject.AddComponent<CameraFollow2D>();
                 follow.SetTarget(target);
             }
+            else
+            {
+                ConfigureCinemachineLens(component, 5.625f);
+            }
+
+            return cameraObject.transform;
+        }
+
+        private static void ConfigureCinemachineLens(Component component, float orthographicSize)
+        {
+            var serializedObject = new SerializedObject(component);
+            var iterator = serializedObject.GetIterator();
+
+            while (iterator.Next(true))
+            {
+                if (iterator.propertyType == SerializedPropertyType.Float &&
+                    iterator.name.Contains("OrthographicSize"))
+                {
+                    iterator.floatValue = orthographicSize;
+                }
+                else if (iterator.propertyType == SerializedPropertyType.Enum &&
+                         iterator.name.Contains("ModeOverride"))
+                {
+                    var orthographicIndex = Array.FindIndex(
+                        iterator.enumNames,
+                        name => name.Contains("Orthographic"));
+                    if (orthographicIndex >= 0)
+                    {
+                        iterator.enumValueIndex = orthographicIndex;
+                    }
+                }
+            }
+
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void CreateParallaxBackground(
+            Transform parent,
+            Transform cameraTransform,
+            ParallaxSprites sprites)
+        {
+            var root = new GameObject("Street Parallax");
+            root.transform.SetParent(parent);
+
+            CreateParallaxLayer(
+                "Far Skyline",
+                sprites.Skyline,
+                root.transform,
+                cameraTransform,
+                new Vector2(120f, 22f),
+                new Vector3(cameraTransform.position.x, 7f, 8f),
+                0.92f,
+                -30);
+            CreateParallaxLayer(
+                "Distant Buildings",
+                sprites.Buildings,
+                root.transform,
+                cameraTransform,
+                new Vector2(112f, 9.5f),
+                new Vector3(cameraTransform.position.x, 3.25f, 7f),
+                0.7f,
+                -20);
+            CreateParallaxLayer(
+                "Street Furniture",
+                sprites.StreetFurniture,
+                root.transform,
+                cameraTransform,
+                new Vector2(140f, 8f),
+                new Vector3(cameraTransform.position.x, -0.4f, 6f),
+                0.35f,
+                -10);
+        }
+
+        private static void CreateParallaxLayer(
+            string name,
+            Sprite sprite,
+            Transform parent,
+            Transform cameraTransform,
+            Vector2 worldSize,
+            Vector3 position,
+            float horizontalFollow,
+            int sortingOrder)
+        {
+            if (sprite == null)
+            {
+                throw new InvalidOperationException($"Parallax sprite '{name}' was not imported.");
+            }
+
+            var layer = CreateVisual(name, sprite, "Background", Vector2.one);
+            layer.transform.SetParent(parent);
+            layer.transform.position = position;
+            layer.transform.localScale = new Vector3(
+                worldSize.x / sprite.bounds.size.x,
+                worldSize.y / sprite.bounds.size.y,
+                1f);
+            layer.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
+            layer.AddComponent<ParallaxLayer2D>().Configure(cameraTransform, horizontalFollow, 0f);
         }
 
         private static Component AddComponentIfAvailable(GameObject target, string fullTypeName)
@@ -603,14 +773,9 @@ namespace AfterYou.Editor
         private static T GetOrCreate<T>(string path, bool overwrite) where T : ScriptableObject
         {
             var existing = AssetDatabase.LoadAssetAtPath<T>(path);
-            if (existing != null && !overwrite)
-            {
-                return existing;
-            }
-
             if (existing != null)
             {
-                AssetDatabase.DeleteAsset(path);
+                return existing;
             }
 
             var asset = ScriptableObject.CreateInstance<T>();
@@ -622,14 +787,16 @@ namespace AfterYou.Editor
         private static Sprite GetOrCreateSprite(string path, Color color, bool overwrite)
         {
             var existing = AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().FirstOrDefault();
-            if (existing != null && !overwrite)
+            if (existing != null)
             {
                 return existing;
             }
 
-            if (AssetDatabase.LoadMainAssetAtPath(path) != null)
+            var existingMainAsset = AssetDatabase.LoadMainAssetAtPath(path);
+            if (existingMainAsset != null)
             {
-                AssetDatabase.DeleteAsset(path);
+                throw new InvalidOperationException(
+                    $"Placeholder sprite path '{path}' is occupied by an incompatible asset.");
             }
 
             var texture = new Texture2D(16, 16, TextureFormat.RGBA32, false)
@@ -652,6 +819,49 @@ namespace AfterYou.Editor
             AssetDatabase.AddObjectToAsset(sprite, texture);
             EditorUtility.SetDirty(texture);
             return sprite;
+        }
+
+        private static ParallaxSprites PrepareParallaxSprites()
+        {
+            return new ParallaxSprites
+            {
+                Skyline = PrepareParallaxSprite(SkylinePath),
+                Buildings = PrepareParallaxSprite(BuildingsPath),
+                StreetFurniture = PrepareParallaxSprite(StreetFurniturePath)
+            };
+        }
+
+        private static Sprite PrepareParallaxSprite(string path)
+        {
+            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+            if (AssetImporter.GetAtPath(path) is not TextureImporter importer)
+            {
+                throw new InvalidOperationException($"Parallax texture '{path}' is missing.");
+            }
+
+            var changed =
+                importer.textureType != TextureImporterType.Sprite ||
+                importer.spritePixelsPerUnit != 32f ||
+                importer.filterMode != FilterMode.Point ||
+                importer.textureCompression != TextureImporterCompression.Uncompressed ||
+                !importer.alphaIsTransparency ||
+                importer.wrapMode != TextureWrapMode.Clamp ||
+                importer.mipmapEnabled;
+
+            if (changed)
+            {
+                importer.textureType = TextureImporterType.Sprite;
+                importer.spriteImportMode = SpriteImportMode.Single;
+                importer.spritePixelsPerUnit = 32f;
+                importer.filterMode = FilterMode.Point;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.alphaIsTransparency = true;
+                importer.mipmapEnabled = false;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.SaveAndReimport();
+            }
+
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
         }
 
         private static void Configure(Object target, params (string field, Object value)[] values)
@@ -727,24 +937,32 @@ namespace AfterYou.Editor
 
         private static void MarkDirty(FoundationAssets assets)
         {
-            EditorUtility.SetDirty(assets.TimeConfiguration);
-            EditorUtility.SetDirty(assets.TimeChanged);
-            EditorUtility.SetDirty(assets.DayEnded);
-            EditorUtility.SetDirty(assets.NarrativeCompleted);
-            EditorUtility.SetDirty(assets.DialogueStarted);
-            EditorUtility.SetDirty(assets.DialogueEnded);
+            MarkDirtyIfAlive(assets.TimeConfiguration);
+            MarkDirtyIfAlive(assets.TimeChanged);
+            MarkDirtyIfAlive(assets.DayEnded);
+            MarkDirtyIfAlive(assets.NarrativeCompleted);
+            MarkDirtyIfAlive(assets.DialogueStarted);
+            MarkDirtyIfAlive(assets.DialogueEnded);
             foreach (var portal in assets.PortalDefinitions)
             {
-                EditorUtility.SetDirty(portal);
+                MarkDirtyIfAlive(portal);
             }
 
             foreach (var character in assets.Characters)
             {
-                EditorUtility.SetDirty(character);
+                MarkDirtyIfAlive(character);
                 if (character.Routine != null)
                 {
-                    EditorUtility.SetDirty(character.Routine);
+                    MarkDirtyIfAlive(character.Routine);
                 }
+            }
+        }
+
+        private static void MarkDirtyIfAlive(Object asset)
+        {
+            if (asset != null)
+            {
+                EditorUtility.SetDirty(asset);
             }
         }
 
@@ -753,6 +971,7 @@ namespace AfterYou.Editor
             var paths = new[]
             {
                 Root + "/Art",
+                Root + "/Art/Parallax",
                 Root + "/Art/Placeholders",
                 Root + "/Data",
                 Root + "/Data/Characters",
@@ -810,5 +1029,13 @@ namespace AfterYou.Editor
             public Sprite Npc;
             public Sprite Portal;
         }
+
+        private sealed class ParallaxSprites
+        {
+            public Sprite Skyline;
+            public Sprite Buildings;
+            public Sprite StreetFurniture;
+        }
+
     }
 }
