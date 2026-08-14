@@ -1,0 +1,34 @@
+AFTER YOU - FOUNDATION ARCHITECTURE
+
+The specification is the source of truth. This foundation intentionally contains no full story.
+
+1. Composition root
+GameBootstrapper registers all focused services before initializing them. Managers communicate
+through interfaces, the service registry, and ScriptableObject event channels instead of static
+singletons or scene lookups. This keeps dependencies explicit and makes individual systems
+replaceable.
+
+2. Data versus behavior
+Characters, routines, dialogue, quests, narrative events, portals, time configuration, and event
+channels are assets. Runtime components execute those definitions. Content can therefore grow
+without adding branches to managers or coupling logic to scenes and art.
+
+3. Narrative rules
+Narrative events use generic requirement and consequence records. Days, time segments, flags,
+abilities, character availability, relationships, quests, and future content can be composed in
+data. StoryManager owns world-state facts; EventManager only evaluates and applies event data.
+
+4. Managers
+The managers requested by the specification are retained as small domain services. No global
+manager coordinates every feature. SaveManager discovers save participants and TimeManager raises
+day-end events, so autosave does not create a Time-to-Save dependency.
+
+5. World and portals
+MainStreet and interiors share one loaded scene. Paired PortalEndpoint components teleport the
+player between already-rendered spaces, avoiding loading screens and fades. Presentation can later
+replace the placeholder geometry without changing portal logic.
+
+6. Generated foundation content
+The editor content generator creates reusable GameSystems, Player, NPC, and Portal prefabs, all
+baseline ScriptableObject assets, and the MainStreet scene. It is versioned and idempotent so the
+same content can be rebuilt safely from Tools > After You > Rebuild Foundation Content.

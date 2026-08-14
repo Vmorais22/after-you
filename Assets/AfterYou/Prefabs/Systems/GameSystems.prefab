@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5548630850640122753
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2577349012955134802}
+  - component: {fileID: 5998275942034245709}
+  - component: {fileID: 7084398619026136689}
+  - component: {fileID: 8975606039325525663}
+  - component: {fileID: 3843087129508467244}
+  - component: {fileID: 8729675591610029495}
+  - component: {fileID: 8971290267261008505}
+  - component: {fileID: 2026623072814829868}
+  - component: {fileID: 226637488212856503}
+  - component: {fileID: 6745657638265892111}
+  - component: {fileID: 7160319187014531575}
+  - component: {fileID: 2476648775518242529}
+  - component: {fileID: 1576385771445699659}
+  m_Layer: 0
+  m_Name: GameSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2577349012955134802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5998275942034245709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c954d84dfa7056d48905459c02dd639c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Core.GameBootstrapper
+  persistAcrossScenes: 1
+--- !u!114 &7084398619026136689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 618eb1b4d0dafa747a37a071445b5098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Game.GameManager
+--- !u!114 &8975606039325525663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcdc0f0a8d613de4dbc67374b4240b7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.TimeSystem.TimeManager
+  configuration: {fileID: 11400000, guid: b82df07715ac11848b09fd508db7a28c, type: 2}
+  timeChanged: {fileID: 11400000, guid: aee5e570a698d84429640fd638468d18, type: 2}
+  dayEnded: {fileID: 11400000, guid: ad3c4eb3ac2b5a740b86912bc39d8d87, type: 2}
+--- !u!114 &3843087129508467244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f06548b3d37cf449cc552d69db1a8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Narrative.StoryManager
+  startingAbilities: []
+--- !u!114 &8729675591610029495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3efd3b3189184844b83ad52fc415aa2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Characters.CharacterManager
+  timeChanged: {fileID: 11400000, guid: aee5e570a698d84429640fd638468d18, type: 2}
+--- !u!114 &8971290267261008505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c669ceac4d082b841bb7d45c2f0ee420, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Dialogue.DialogueManager
+  dialogueStarted: {fileID: 11400000, guid: 064f693b6248e7c40bf623c0e6a122a7, type: 2}
+  dialogueEnded: {fileID: 11400000, guid: e8babff029f4b9c40ab991c0a8251e05, type: 2}
+--- !u!114 &2026623072814829868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03df113b8e2f7974aa94a2230730aa85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Quests.QuestManager
+--- !u!114 &226637488212856503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 479fecb4e81230d4db88425eab88a8ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Relationships.RelationshipManager
+  minimumValue: -100
+  maximumValue: 100
+--- !u!114 &6745657638265892111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb84b7a8a2bec8e4b86a04c596ae0c5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Portals.PortalManager
+  reentryCooldown: 0.35
+--- !u!114 &7160319187014531575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 605126b8088f5bd4a8a387e430ddbe26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Narrative.EventManager
+  eventCompleted: {fileID: 11400000, guid: cd71a4d3a9b59944eb64cfa457321910, type: 2}
+--- !u!114 &2476648775518242529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64178dfe8d8c67841b2659e50a66431d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Dreams.DreamManager
+  dayEnded: {fileID: 11400000, guid: ad3c4eb3ac2b5a740b86912bc39d8d87, type: 2}
+  dreams: []
+--- !u!114 &1576385771445699659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548630850640122753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bba9ab156842ae40974836d60165e76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Save.SaveManager
+  dayEnded: {fileID: 11400000, guid: ad3c4eb3ac2b5a740b86912bc39d8d87, type: 2}
+  autosaveSlot: autosave

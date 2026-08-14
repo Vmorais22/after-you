@@ -1,0 +1,21 @@
+{
+  "name": "AfterYou.Tests.EditMode",
+  "rootNamespace": "AfterYou.Tests",
+  "references": [
+    "AfterYou.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

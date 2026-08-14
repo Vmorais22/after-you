@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 27
+  productGUID: 02c9a79a4f344691903760ea61379484
+  AndroidProfiler: 0
+  companyName: After You
+  productName: After You
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
+  defaultScreenWidthWeb: 960
+  defaultScreenHeightWeb: 600
+  m_ActiveColorSpace: 0
+  use32BitDisplayBuffer: 1
+  m_SupportedAspectRatios:
+    4:3: 1
+    5:4: 1
+    16:10: 1
+    16:9: 1
+    Others: 1
+  runInBackground: 1
+  captureSingleScreen: 0
+  resizableWindow: 1
+  visibleInBackground: 1
+  allowFullscreenSwitch: 1
+  fullscreenMode: 3
+  scriptingBackend:
+    Standalone: 1
+  il2cppCompilerConfiguration:
+    Standalone: 0
+  managedStrippingLevel:
+    Standalone: 1
+  activeInputHandler: 2
+  applicationIdentifier:
+    Standalone: com.afteryou.game
+  applicationVersion: 0.1.0

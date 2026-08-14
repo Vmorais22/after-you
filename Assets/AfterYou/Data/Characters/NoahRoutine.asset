@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7701ced99fd194c9218a2eb170fa28, type: 3}
+  m_Name: NoahRoutine
+  m_EditorClassIdentifier: AfterYou.Runtime::AfterYou.Characters.RoutineScheduleSO
+  slots:
+  - Day: 1
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 1
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 1
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 2
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 2
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 2
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 3
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 3
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 3
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 4
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 4
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 4
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 5
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 5
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 5
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 6
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 6
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 6
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
+  - Day: 7
+    Segment: 0
+    LocationId: street-anchor-03
+    ActivityId: morning_walk
+    RequiredFlag: 
+  - Day: 7
+    Segment: 1
+    LocationId: building-04-interior
+    ActivityId: afternoon_routine
+    RequiredFlag: 
+  - Day: 7
+    Segment: 2
+    LocationId: street-anchor-06
+    ActivityId: evening_routine
+    RequiredFlag: 
